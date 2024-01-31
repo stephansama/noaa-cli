@@ -1,32 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::env;
 
-#[derive(Debug, Deserialize, Serialize)]
-struct GoogleResults {
-    address_components: Vec<AddressComponents>,
-    formatted_address: String,
-    place_id: String,
-    geometry: GeometryResponse,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-struct AddressComponents {
-    long_name: String,
-    short_name: String,
-    types: Vec<String>,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-struct GeometryResponse {
-    location: GeometryLocationMap,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-struct GeometryLocationMap {
-    lat: f32,
-    lng: f32,
-}
-
 pub type Locations = Vec<Location>;
 
 #[derive(Debug, Serialize, Deserialize)]
