@@ -1,6 +1,6 @@
 use crate::{
     args::Args,
-    google::get_lat_lng,
+    geocode::get_lat_lng,
     noaa::{create_noaa_client, get_point_data, get_temperature, NOAATemperatureProperties},
 };
 use clap::Parser;

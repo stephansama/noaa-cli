@@ -4,7 +4,7 @@ use ui::{init_tui, poll_events, render_ui, shutdown_tui};
 mod api;
 mod args;
 mod events;
-mod google;
+mod geocode;
 mod noaa;
 mod state;
 mod ui;
