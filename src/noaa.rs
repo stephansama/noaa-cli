@@ -104,21 +104,3 @@ pub async fn get_temperature(
 
     Ok(properties)
 }
-
-#[cfg(test)]
-mod tests {
-    // use super::*;
-
-    // #[test]
-    // fn should_create_noaa_client() -> Result<(), Box<dyn std::error::Error>> {
-    //     let client = create_noaa_client()?;
-    //     Ok(assert!(client))
-    //     // assert_eq(client.build().await?, "https://api.noaa.gov/data/2.5/stations/");
-    // }
-
-    // #[test]
-    //     fn test_get_forecast_hourly() -> Result< {
-    //         let client = create_noaa_client()?.build()?;
-    //         assert!(get_point_data(client, _))
-    //     }
-}
