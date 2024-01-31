@@ -1,14 +1,13 @@
-use super::api::DynamicJSON;
+use crate::api::DynamicJSON;
+use chrono::{DateTime, Utc};
 use reqwest::{header, Client, ClientBuilder};
 use serde::{Deserialize, Serialize};
-// use std::fs::File;
-// use std::io::Write;
 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PrecipationInformation {
-    unit_code: String,
-    value: f32,
+    pub unit_code: String,
+    pub value: f32,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -34,9 +33,9 @@ pub struct NOAATemperaturePeriod {
     pub number: u8,
     pub icon: String,
     pub name: String,
-    pub end_time: String,
+    pub end_time: DateTime<Utc>,
     pub wind_speed: String,
-    pub start_time: String,
+    pub start_time: DateTime<Utc>,
     pub short_forecast: String,
     pub wind_direction: String,
     pub temperature_unit: String,
@@ -104,4 +103,22 @@ pub async fn get_temperature(
         serde_json::from_value(json.dynamic_properties["properties"].clone())?;
 
     Ok(properties)
+}
+
+#[cfg(test)]
+mod tests {
+    // use super::*;
+
+    // #[test]
+    // fn should_create_noaa_client() -> Result<(), Box<dyn std::error::Error>> {
+    //     let client = create_noaa_client()?;
+    //     Ok(assert!(client))
+    //     // assert_eq(client.build().await?, "https://api.noaa.gov/data/2.5/stations/");
+    // }
+
+    // #[test]
+    //     fn test_get_forecast_hourly() -> Result< {
+    //         let client = create_noaa_client()?.build()?;
+    //         assert!(get_point_data(client, _))
+    //     }
 }
