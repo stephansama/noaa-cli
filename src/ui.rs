@@ -7,11 +7,11 @@ use crossterm::{
 use ratatui::{
     backend::CrosstermBackend,
     layout::{Alignment, Rect},
-    style::{Color, Style, Stylize},
+    style::{Color, Style},
     text::{Line, Span},
     widgets::{
         block::{Position, Title},
-        Block, BorderType, Borders, List, Paragraph, Widget,
+        Block, BorderType, Borders, Paragraph,
     },
     Frame, Terminal,
 };
@@ -64,15 +64,20 @@ pub fn render_ui(state: &State, frame: &mut Frame) {
                 .title(
                     Title::from(format!(
                         "{}",
-                        period.start_time.format("%Y-%m-%d Hour: %H").to_string()
+                        period.start_time.format("%m-%d Hour: %H").to_string()
                     ))
                     .alignment(Alignment::Center)
                     .position(Position::Bottom),
                 )
                 .borders(Borders::ALL)
-                .border_style(Style::default().fg(Color::White))
-                .border_type(BorderType::Rounded)
-                .white();
+                .border_style(Style::default().fg(match period.temperature {
+                    temp if temp < 30 => Color::Red,
+                    temp if temp >= 30 && temp < 40 => Color::Yellow,
+                    temp if temp >= 40 && temp < 50 => Color::Blue,
+                    temp if temp >= 50 => Color::Green,
+                    _ => Color::White,
+                }))
+                .border_type(BorderType::Rounded);
             let paragraph = Paragraph::new(vec![
                 Line::from(vec![Span::raw(format!(
                     "forecast: {:?}",
