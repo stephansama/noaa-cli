@@ -22,7 +22,7 @@ pub struct NOAAPointProperties {
     /// radar station received from point
     radar_station: String,
     /// url for hourly forecast
-    pub forecast_hourly: String,
+    forecast_hourly: String,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
