@@ -10,13 +10,13 @@ use ratatui::{
     Frame,
 };
 
-fn move_box(area: &mut Rect, size: Rect) {
+fn move_box(area: &mut Rect, (width, height): (u16, u16)) {
     area.x += area.width;
-    if area.x >= size.width {
+    if area.x >= width {
         area.x = 0;
         area.y += area.height;
     }
-    if area.y >= size.height {
+    if area.y >= height {
         area.y = 0;
     }
 }
@@ -31,9 +31,9 @@ fn find_position(num: u16) -> u16 {
 
 pub fn render_ui(state: &State, frame: &mut Frame) {
     let mut area = frame.size();
-    let (width, height) = (find_position(area.width), find_position(area.height));
-    area.width = width / 4;
-    area.height = height / 4;
+    let (max_width, max_height) = (find_position(area.width), find_position(area.height));
+    area.width = max_width / 4;
+    area.height = max_height / 4;
     state
         .current_temperature
         .as_ref()
@@ -94,14 +94,6 @@ pub fn render_ui(state: &State, frame: &mut Frame) {
             .block(title_block.clone());
             frame.render_widget(title_block, area);
             frame.render_widget(paragraph, area);
-            move_box(
-                &mut area,
-                Rect {
-                    x: 0,
-                    y: 0,
-                    width,
-                    height,
-                },
-            );
+            move_box(&mut area, (max_width, max_height));
         });
 }
