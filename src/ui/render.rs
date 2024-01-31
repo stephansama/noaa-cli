@@ -1,11 +1,5 @@
-use crate::{events::handle_event, state::State};
-use crossterm::{
-    event::{poll, read, Event, KeyEventKind},
-    execute,
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-};
+use crate::state::State;
 use ratatui::{
-    backend::CrosstermBackend,
     layout::{Alignment, Rect},
     style::{Color, Style},
     text::{Line, Span},
@@ -13,37 +7,33 @@ use ratatui::{
         block::{Position, Title},
         Block, BorderType, Borders, Paragraph,
     },
-    Frame, Terminal,
+    Frame,
 };
-use std::io::stdout;
-
-pub fn init_tui() -> Result<Terminal<CrosstermBackend<std::io::Stdout>>, std::io::Error> {
-    enable_raw_mode()?;
-    execute!(std::io::stderr(), EnterAlternateScreen)?;
-    Terminal::new(CrosstermBackend::new(stdout()))
-}
-
-pub fn shutdown_tui() -> Result<(), std::io::Error> {
-    execute!(std::io::stderr(), LeaveAlternateScreen)?;
-    disable_raw_mode()
-}
 
 fn move_box(area: &mut Rect, size: Rect) {
     area.x += area.width;
-    let (max_x, max_y) = (size.width, size.height);
-    if area.x >= max_x {
+    if area.x >= size.width {
         area.x = 0;
         area.y += area.height;
     }
-    if area.y >= max_y {
+    if area.y >= size.height {
         area.y = 0;
+    }
+}
+
+fn find_position(num: u16) -> u16 {
+    if num % 4 == 0 {
+        num
+    } else {
+        find_position(num - 1)
     }
 }
 
 pub fn render_ui(state: &State, frame: &mut Frame) {
     let mut area = frame.size();
-    area.width = area.width / 4;
-    area.height = area.height / 4;
+    let (width, height) = (find_position(area.width), find_position(area.height));
+    area.width = width / 4;
+    area.height = height / 4;
     state
         .current_temperature
         .as_ref()
@@ -91,7 +81,6 @@ pub fn render_ui(state: &State, frame: &mut Frame) {
                     "precipitation: {:?}%",
                     period.probability_of_precipitation.value
                 ))]),
-                // Line::from(vec![Span::raw(format!("skip_by: {:?}", state.skip_by))]),
                 Line::from(vec![Span::raw(format!(
                     "wind direction: {}",
                     period.wind_direction
@@ -105,20 +94,14 @@ pub fn render_ui(state: &State, frame: &mut Frame) {
             .block(title_block.clone());
             frame.render_widget(title_block, area);
             frame.render_widget(paragraph, area);
-            move_box(&mut area, frame.size());
-            // Line::from(vec![Span::styled(
-            //     Style::new().green().italic(),
-            // )]),
+            move_box(
+                &mut area,
+                Rect {
+                    x: 0,
+                    y: 0,
+                    width,
+                    height,
+                },
+            );
         });
-}
-
-pub fn poll_events(state: &mut State) -> Result<(), std::io::Error> {
-    if poll(std::time::Duration::from_millis(16))? {
-        if let Event::Key(key) = read()? {
-            if key.kind == KeyEventKind::Press {
-                handle_event(state, key)
-            }
-        }
-    }
-    Ok(())
 }
