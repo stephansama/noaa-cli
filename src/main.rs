@@ -11,12 +11,12 @@ mod ui;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut terminal = init_tui()?;
     let mut state = State::new()?;
+    let mut terminal = init_tui()?;
     state.find_temperature().await?;
 
     loop {
-        terminal.draw(|mut frame| render_ui(&state, &mut frame))?;
+        terminal.draw(render_ui(&state))?;
         poll_events(&mut state)?;
         if state.exited {
             break;

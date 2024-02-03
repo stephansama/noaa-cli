@@ -31,5 +31,5 @@ pub async fn get_lat_lng(zip: String) -> Result<(f32, f32), Box<dyn std::error::
 
     let json: Locations = serde_json::from_str(&resp)?;
 
-    return Ok((json[0].lat.clone().parse()?, json[0].lon.clone().parse()?));
+    Ok((json[0].lat.clone().parse()?, json[0].lon.clone().parse()?))
 }

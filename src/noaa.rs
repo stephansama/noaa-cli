@@ -91,7 +91,7 @@ pub async fn get_temperature(
     grid_data: NOAAPointProperties,
 ) -> Result<NOAATemperatureProperties, Box<dyn std::error::Error>> {
     let noaa_result = client
-        .get(format!("{}", grid_data.forecast_hourly))
+        .get(grid_data.forecast_hourly)
         .send()
         .await?
         .text()

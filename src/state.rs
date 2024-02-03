@@ -44,6 +44,7 @@ impl State {
         let location = get_lat_lng(self.args.zip.clone()).await?;
         let noaa_client = create_noaa_client()?.build()?;
         let grid_point_data = get_point_data(&noaa_client, location).await?;
-        Ok(self.current_temperature = Some(get_temperature(&noaa_client, grid_point_data).await?))
+        self.current_temperature = Some(get_temperature(&noaa_client, grid_point_data).await?);
+        Ok(())
     }
 }
